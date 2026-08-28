@@ -1,6 +1,7 @@
+use leptos::{logging::log, prelude::*};
 use std::time::Duration;
 
-use leptos::prelude::*;
+use stylist::style; //cargo add stylist
 
 /*struct PopupAndId {
     popup: Popup,
@@ -10,7 +11,6 @@ use leptos::prelude::*;
 #[component]
 pub fn Popup(begone_wordly_desire: Callback<()>, what_to_say: String) -> impl IntoView {
     let (timer, timer_s) = signal(0);
-
     Effect::new(move |_| {
         let handle = set_interval_with_handle(
             move || tick_the_timer(timer_s, begone_wordly_desire),
@@ -19,8 +19,19 @@ pub fn Popup(begone_wordly_desire: Callback<()>, what_to_say: String) -> impl In
         .expect("failed to set interval");
         on_cleanup(move || handle.clear());
     });
+
+    let styles = style!(
+        background: orange;
+        width: 200px;
+        margin: 2px;
+        color: white;
+        padding: 8px;
+    )
+    .map_err(|e| log!("{}", e))
+    .unwrap();
+
     view! {
-        <div>
+        <div class=styles.get_class_name().to_string()>
             {what_to_say}
             <br/>
             {move || timer.get()}
@@ -41,5 +52,3 @@ fn tick_the_timer(timer_s: WriteSignal<i32>, begone_wordly_desire: Callback<()>)
         begone_wordly_desire.run(());
     }
 }
-
-//pub fn spawn_popup() -> impl IntoAny {}
