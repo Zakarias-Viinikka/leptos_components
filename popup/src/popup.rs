@@ -1,12 +1,43 @@
 use leptos::{logging::log, prelude::*};
-use std::time::Duration;
+use std::{sync::LazyLock, time::Duration};
 
 use stylist::style; //cargo add stylist
 
-/*struct PopupAndId {
-    popup: Popup,
-    id: i32,
-}*/
+macro_rules! for_leptos {
+    ($list:expr, $item:ident => $body:expr) => {
+        view! {
+            <For
+                each=move || $list.get()
+                key=|$item| $item.id
+                children=move |$item| $body
+            />
+        }
+    };
+}
+
+static POPUPS: LazyLock<ArcRwSignal<Vec<PopupSpawner>>> =
+    LazyLock::new(|| ArcRwSignal::new(Vec::new()));
+static CTR: LazyLock<ArcRwSignal<i32>> = LazyLock::new(|| ArcRwSignal::new(0));
+
+pub fn create_popup(what_to_say: String) {
+    POPUPS.update(|list| list.push(PopupSpawner::new(what_to_say, CTR.get())));
+    CTR.update(|c| *c += 1);
+}
+
+#[component]
+pub fn PopupContainer() -> impl IntoView {
+    view! {
+
+        {for_leptos!(ArcRwSignal::clone(&POPUPS), popup => {
+            view! {
+                <Popup
+                    begone_wordly_desire=Callback::new(move |_| remove_me(popup.id))
+                    what_to_say=popup.what_to_say.clone()
+                />
+            }
+        })}
+    }
+}
 
 #[component]
 pub fn Popup(begone_wordly_desire: Callback<()>, what_to_say: String) -> impl IntoView {
@@ -51,4 +82,20 @@ fn tick_the_timer(timer_s: WriteSignal<i32>, begone_wordly_desire: Callback<()>)
     if should_remove {
         begone_wordly_desire.run(());
     }
+}
+
+#[derive(Clone)]
+pub struct PopupSpawner {
+    what_to_say: String,
+    pub id: i32,
+}
+
+impl PopupSpawner {
+    pub fn new(what_to_say: String, id: i32) -> Self {
+        Self { what_to_say, id }
+    }
+}
+
+fn remove_me(id: i32) {
+    ArcRwSignal::clone(&POPUPS).update(|list| list.retain(|item| item.id != id));
 }
