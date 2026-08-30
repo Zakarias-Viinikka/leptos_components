@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slide Demo</title>
+    <style>
+        /* Box styling with border and some padding */
+        .box {
+            border: 2px solid #333;
+            padding: 20px;
+            margin-top: 20px;
+            width: 200px;
+            text-align: center;
+            background-color: #f9f9f9;
+            transition: transform 0.5s ease;
+            transform: translateX(0);
+        }
+
+        /* Class that slides the box to the right */
+        .box.slide-right {
+            transform: translateX(200px);
+        }
+    </style>
+</head>
+<body>
+    <button id="toggle-btn">Toggle Slide</button>
+    <div id="box" class="box">
+        <p>Some random text inside the box.</p>
+    </div>
+
+    <script>
+        const button = document.getElementById('toggle-btn');
+        const box = document.getElementById('box');
+
+        button.addEventListener('click', () => {
+            box.classList.toggle('slide-right');
+        });
+    </script>
+</body>
+</html>
