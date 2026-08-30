@@ -27,7 +27,6 @@ pub fn create_popup(what_to_say: String) {
 #[component]
 pub fn PopupContainer() -> impl IntoView {
     view! {
-
         {for_leptos!(ArcRwSignal::clone(&POPUPS), popup => {
             view! {
                 <Popup
