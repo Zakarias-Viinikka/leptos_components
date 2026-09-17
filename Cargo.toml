@@ -1,0 +1,3 @@
+[workspace]
+members = ["popup", "sidebar"]
+resolver = "2"
