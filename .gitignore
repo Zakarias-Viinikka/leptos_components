@@ -72,3 +72,10 @@
 **/*.hprof
 
 **/.artifacts/
+
+# --- From standard ZakkeN gitignore ---
+**/pkg/
+**/node_modules/
+**/*.env
+**/.zed/
+**/*ip.kt
